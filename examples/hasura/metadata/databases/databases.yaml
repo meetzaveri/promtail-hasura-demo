@@ -1,0 +1,20 @@
+- name: default
+  kind: postgres
+  configuration:
+    connection_info:
+      database_url:
+        from_env: HGE_DATABASE_URL
+      isolation_level: read-committed
+      pool_settings:
+        connection_lifetime: 600
+        idle_timeout: 180
+        retries: 1
+      use_prepared_statements: true
+  health_check:
+    interval: 10
+    retries: 3
+    retry_interval: 5
+    test:
+      sql: SELECT 1
+    timeout: 5
+  tables: "!include default/tables/tables.yaml"

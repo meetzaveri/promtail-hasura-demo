@@ -1,0 +1,125 @@
+version: "3.6"
+
+volumes:
+  prometheus_data: {}
+  grafana_data: {}
+  db_data: {}
+  db_replica_data: {}
+  mongo_data:
+  mariadb_data:
+
+services:
+  postgres:
+    container_name: hge-metadata-pg
+    image: ${PG_IMAGE}
+    restart: always
+    ports:
+      - "${PG_PORT}:5432"
+    volumes:
+      - "db_data:/bitnami/postgresql"
+    environment:
+      POSTGRESQL_USERNAME: ${PG_USER}
+      POSTGRESQL_PASSWORD: ${PG_PASSWORD}
+      POSTGRESQL_DATABASE: ${PG_DATABASE}
+
+  graphql-engine:
+    container_name: hge
+    image: ${HGE_IMAGE}
+    ports:
+      - "${HGE_PORT}:8080"
+    depends_on:
+      - postgres
+    labels:
+      logging: "promtail"
+      logging_jobname: "graphql-engine"
+    restart: always
+    ## uncomment the auto migration image and volumes to explore the example
+    volumes:
+      - ./examples/hasura/migrations:/hasura-migrations
+      - ./examples/hasura/metadata:/hasura-metadata
+    environment:
+      ## generate a Hasura Pro Key from the Hasura EE Control Plane for this project and uncomment the below line
+      HASURA_GRAPHQL_EE_LICENSE_KEY: ${HGE_EE_LICENSE_KEY}
+      HASURA_GRAPHQL_ADMIN_SECRET: ${HGE_ADMIN_SECRET}
+      ## The metadata database for this Hasura GraphQL project. Can be changed to a managed postgres instance
+      HASURA_GRAPHQL_METADATA_DATABASE_URL: ${HGE_METADATA_DATABASE_URL}
+      HGE_DATABASE_URL: ${HGE_DATABASE_URL}
+
+      ## Optional settings:
+      ## enable the console served by server
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
+      ## enable debugging mode. It is recommended to disable this in production
+      HASURA_GRAPHQL_DEV_MODE: "true"
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: ${HGE_ENABLED_LOG_TYPES}
+      # HASURA_GRAPHQL_LOG_LEVEL: debug
+      HASURA_GRAPHQL_CONSOLE_ASSETS_DIR: "/srv/console-assets"
+      # HASURA_GRAPHQL_REDIS_URL: "redis://redis:6379"
+      # HASURA_GRAPHQL_RATE_LIMIT_REDIS_URL: "redis://redis:6379"
+      # HASURA_GRAPHQL_MAX_CACHE_SIZE: "200"
+      # HASURA_GRAPHQL_SERVER_PORT: "8080"
+      HASURA_GRAPHQL_ENABLED_APIS: ${HGE_ENABLED_APIS}
+      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: anonymous
+
+      ## enable basic authorization for the Prometheus metrics endpoint
+      ## remember to set the secret credential in the Prometheus target config
+      # HASURA_GRAPHQL_METRICS_SECRET: ${HGE_METRICS_SECRET}
+
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  prometheus:
+    container_name: hge-prom
+    image: ${PROM_IMAGE}
+    volumes:
+      - ./prometheus/:/etc/prometheus/
+      - prometheus_data:/prometheus
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--storage.tsdb.path=/prometheus"
+      - "--web.console.libraries=/usr/share/prometheus/console_libraries"
+      - "--web.console.templates=/usr/share/prometheus/consoles"
+      - "--web.enable-lifecycle"
+    ports:
+      - ${PROM_PORT}:9090
+    restart: always
+    deploy:
+      mode: global
+
+  grafana:
+    container_name: hge-grafana
+    image: ${GRAFANA_IMAGE}
+    depends_on:
+      - prometheus
+    ports:
+      - ${GRAFANA_PORT}:3000
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    restart: always
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
+
+  loki:
+    container_name: loki
+    image: ${LOKI_IMAGE}
+    ports:
+      - ${LOKI_PORT}:3100
+    command: -config.file=/etc/loki/local-config.yaml
+    deploy:
+      mode: global
+
+  promtail:
+    container_name: promtail
+    image: ${PROMTAIL_IMAGE}
+    volumes:
+      - ./promtail/config.yaml:/etc/promtail/config.yml:ro
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: always
+    depends_on:
+      - loki

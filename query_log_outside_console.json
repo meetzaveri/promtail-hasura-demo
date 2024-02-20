@@ -1,0 +1,62 @@
+{
+  "query-log": {
+    "detail": {
+      "generated_sql": {
+        "Track": {
+          "prepared_arguments": null,
+          "query": "SELECT  coalesce(json_agg(\"root\" ), '[]' ) AS \"root\" FROM  (SELECT  row_to_json((SELECT  \"_e\"  FROM  (SELECT  \"_root.base\".\"AlbumId\" AS \"AlbumId\", \"_root.base\".\"Bytes\" AS \"Bytes\", \"_root.base\".\"Composer\" AS \"Composer\"       ) AS \"_e\"      ) ) AS \"root\" FROM  (SELECT  *  FROM \"public\".\"Track\"  WHERE ('true')     ) AS \"_root.base\"      ) AS \"_root\"       /* field_name=Track, parameterized_query_hash=e50a36a3a797558be3c27678535d7dec696df3a2, operation_name=getTracks */"
+        }
+      },
+      "kind": "database",
+      "query": {
+        "query": "query getTracks {\n  Track {\n    AlbumId\n    Bytes\n    Composer\n  }\n}\n"
+      },
+      "request_id": "f6115411-3e0c-4ae5-9e1f-f452e51cf768"
+    },
+    "level": "info",
+    "timestamp": "2024-02-19T09:50:34.930+0000",
+    "type": "query-log"
+  },
+  "http-log": {
+    "detail": {
+      "http_info": {
+        "content_encoding": "gzip",
+        "http_version": "HTTP/1.1",
+        "ip": "x.x.x.x",
+        "method": "POST",
+        "request_headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "gzip, deflate, br",
+          "Connection": "keep-alive",
+          "Content-Length": "88",
+          "Content-Type": "application/json",
+          "Host": "localhost:8080",
+          "Postman-Token": "f214c862-7e48-4964-99f9-b6f96d92f650",
+          "User-Agent": "PostmanRuntime/7.36.1"
+        },
+        "status": 200,
+        "url": "/v1/graphql"
+      },
+      "operation": {
+        "parameterized_query_hash": "e50a36a3a797558be3c27678535d7dec696df3a2",
+        "query": {
+          "query": "query getTracks {\n  Track {\n    AlbumId\n    Bytes\n    Composer\n  }\n}\n"
+        },
+        "query_execution_time": 4.6655333e-2,
+        "request_id": "f6115411-3e0c-4ae5-9e1f-f452e51cf768",
+        "request_mode": "single",
+        "request_read_time": 2.5125e-5,
+        "request_size": 88,
+        "response_size": 36246,
+        "uncompressed_response_size": 228834,
+        "user_vars": { "x-hasura-role": "admin" }
+      },
+      "request_id": "f6115411-3e0c-4ae5-9e1f-f452e51cf768"
+    },
+    "level": "info",
+    "span_id": "e09ac18201a1e183",
+    "timestamp": "2024-02-19T09:50:34.930+0000",
+    "trace_id": "13d62c10d4e452fd8612753f3b371a7d",
+    "type": "http-log"
+  }
+}

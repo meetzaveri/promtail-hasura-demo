@@ -1,0 +1,31 @@
+table:
+  name: Album
+  schema: public
+object_relationships:
+  - name: Artist
+    using:
+      foreign_key_constraint_on: ArtistId
+array_relationships:
+  - name: Tracks
+    using:
+      foreign_key_constraint_on:
+        column: AlbumId
+        table:
+          name: Track
+          schema: public
+insert_permissions:
+  - role: anonymous
+    permission:
+      check: {}
+      columns:
+        - Title
+        - AlbumId
+        - ArtistId
+select_permissions:
+  - role: anonymous
+    permission:
+      columns:
+        - Title
+        - AlbumId
+        - ArtistId
+      filter: {}

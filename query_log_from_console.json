@@ -1,0 +1,73 @@
+{
+  "query-log": {
+    "detail": {
+      "generated_sql": {
+        "Album": {
+          "prepared_arguments": null,
+          "query": "SELECT  coalesce(json_agg(\"root\" ), '[]' ) AS \"root\" FROM  (SELECT  row_to_json((SELECT  \"_e\"  FROM  (SELECT  \"_root.base\".\"AlbumId\" AS \"AlbumId\", \"_root.base\".\"ArtistId\" AS \"ArtistId\", \"_root.base\".\"Title\" AS \"Title\"       ) AS \"_e\"      ) ) AS \"root\" FROM  (SELECT  *  FROM \"public\".\"Album\"  WHERE ('true')     ) AS \"_root.base\"      ) AS \"_root\"       /* field_name=Album, parameterized_query_hash=4506e5f48126b9019e63d6c9b92cdadc1ce48118, operation_name=getAlbums */"
+        }
+      },
+      "kind": "database",
+      "query": {
+        "operationName": "getAlbums",
+        "query": "query getAlbums {\n  Album {\n    AlbumId\n    ArtistId\n    Title\n  }\n}\n"
+      },
+      "request_id": "83e83f34-50ea-4787-aa95-584c7488d449"
+    },
+    "level": "info",
+    "timestamp": "2024-02-19T09:51:02.795+0000",
+    "type": "query-log"
+  },
+
+  "http-log": {
+    "detail": {
+      "http_info": {
+        "content_encoding": "gzip",
+        "http_version": "HTTP/1.1",
+        "ip": "x.x.x.x",
+        "method": "POST",
+        "request_headers": {
+          "Accept": "*/*",
+          "Accept-Encoding": "gzip, deflate, br",
+          "Accept-Language": "en-US,en;q=0.9",
+          "Connection": "keep-alive",
+          "Content-Length": "133",
+          "Host": "localhost:8080",
+          "Origin": "http://localhost:8080",
+          "Referer": "http://localhost:8080/console/api/api-explorer",
+          "Sec-Fetch-Dest": "empty",
+          "Sec-Fetch-Mode": "cors",
+          "Sec-Fetch-Site": "same-origin",
+          "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+          "content-type": "application/json",
+          "sec-ch-ua": "\"Not A(Brand\";v=\"99\", \"Google Chrome\";v=\"121\", \"Chromium\";v=\"121\"",
+          "sec-ch-ua-mobile": "?0",
+          "sec-ch-ua-platform": "\"macOS\""
+        },
+        "status": 200,
+        "url": "/v1/graphql"
+      },
+      "operation": {
+        "parameterized_query_hash": "4506e5f48126b9019e63d6c9b92cdadc1ce48118",
+        "query": {
+          "operationName": "getAlbums",
+          "query": "query getAlbums {\n  Album {\n    AlbumId\n    ArtistId\n    Title\n  }\n}\n"
+        },
+        "query_execution_time": 2.5665917e-2,
+        "request_id": "83e83f34-50ea-4787-aa95-584c7488d449",
+        "request_mode": "single",
+        "request_read_time": 2.2125e-5,
+        "request_size": 133,
+        "response_size": 6426,
+        "uncompressed_response_size": 26510,
+        "user_vars": { "x-hasura-role": "admin" }
+      },
+      "request_id": "83e83f34-50ea-4787-aa95-584c7488d449"
+    },
+    "level": "info",
+    "span_id": "f57182f9a205becc",
+    "timestamp": "2024-02-19T09:51:02.795+0000",
+    "trace_id": "5597b1eef763dcc287c35184476f7b92",
+    "type": "http-log"
+  }
+}
