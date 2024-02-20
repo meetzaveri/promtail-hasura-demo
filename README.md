@@ -21,11 +21,11 @@ Here's how it goes in order:
 
 The query level metrics dashboard comes with two optional visualizations, separated by (A) and (B) label distinctively.
 
-A: This visualization contains Grafana query for capturing query logs separated by operation name using pattern expression logic. 
+(A): This visualization contains Grafana query for capturing query logs separated by operation name using pattern expression logic. See example of `query-log` in `query_log_outside_console.json` file.
 
-B: This visualization contains Grafana query for capturing query logs which has `operationName` using it for distinct results separated by operation name. It uses json parser expression 
+(B): This visualization contains Grafana query for capturing query logs which has `operationName` using it for distinct results separated by operation name. It uses json parser expression.  See example of `query-log` in `query_log_from_console.json` file.
 
-Caveat: B visualization won't work in case if you don't explicitly pass `operationName` alongside request payload when making request to `v1/graphql` endpoint.
+**Caveat**: (B) visualization won't work in case if you don't explicitly pass `operationName` alongside request payload when making request to `v1/graphql` endpoint.
 
 ## Get Started
 
